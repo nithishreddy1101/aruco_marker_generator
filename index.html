@@ -84,7 +84,7 @@ async function preview() {
         border_thickness: document.getElementById("bthick").value
     };
 
-    let response = await fetch("http://localhost:5000/generate", {
+    let response = await fetch("https://aruco-marker-generator-w8gi.onrender.com/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
