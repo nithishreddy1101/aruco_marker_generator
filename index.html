@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Aruco Advanced GUI</title>
+</head>
+
+<body>
+
+<h2>Advanced ArUco PDF Generator</h2>
+
+Marker IDs (comma separated):
+<input id="ids" value="0,1,2,3"><br><br>
+
+Marker Size (mm):
+<input id="msize" value="70"><br><br>
+
+Margin (mm):
+<input id="margin" value="10"><br><br>
+
+Padding (mm):
+<input id="padding" value="5"><br><br>
+
+Spacing (mm):
+<input id="spacing" value="10"><br><br>
+
+Dictionary:
+<select id="dict">
+    <option>DICT_4X4_50</option>
+    <option>DICT_5X5_100</option>
+    <option>DICT_6X6_250</option>
+    <option>DICT_7X7_100</option>
+</select>
+<br><br>
+
+Page Size:
+<select id="pagesize">
+    <option>A4</option>
+    <option>A3</option>
+    <option>Letter</option>
+</select>
+<br><br>
+
+Border Color:
+<select id="bcolor">
+    <option value="180,180,180">Light Gray</option>
+    <option value="0,0,0">Black</option>
+    <option value="255,0,0">Red</option>
+    <option value="0,0,255">Blue</option>
+</select>
+<br><br>
+
+Border Thickness:
+<input id="bthick" value="0.1"><br><br>
+
+<button onclick="preview()">Preview PDF</button>
+
+<br><br>
+
+<iframe id="viewer" style="width:90%; height:800px;"></iframe>
+
+<script>
+
+async function preview() {
+
+    let ids = document.getElementById("ids").value
+        .split(",")
+        .map(x => parseInt(x));
+
+    let color = document.getElementById("bcolor").value
+        .split(",")
+        .map(x => parseInt(x));
+
+    let data = {
+        ids: ids,
+        marker_size: document.getElementById("msize").value,
+        margin: document.getElementById("margin").value,
+        padding: document.getElementById("padding").value,
+        spacing: document.getElementById("spacing").value,
+
+        dictionary: document.getElementById("dict").value,
+        page_size: document.getElementById("pagesize").value,
+
+        border_color: color,
+        border_thickness: document.getElementById("bthick").value
+    };
+
+    let response = await fetch("http://localhost:5000/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
+
+    let blob = await response.blob();
+
+    let url = URL.createObjectURL(blob);
+
+    document.getElementById("viewer").src = url;
+}
+
+</script>
+
+</body>
+</html>
